@@ -8,6 +8,7 @@
 float yaw = 0, pitch = 0, roll = 0;
 float yaw_a = 0, pitch_a = 0, roll_a = 0;
 float yaw_g = 0, pitch_g = 0, roll_g = 0;
+float pitch_temp = 0, roll_temp = 0;
 
 infor MPU6050;
 
@@ -52,8 +53,6 @@ void MPU6050_Call(void)
 void MPU6050_GetData(infor* temp)
 {
     int16_t data_h, data_l;
-	int16_t sum_Ax = 0, sum_Ay = 0, sum_Az = 0;
-	int16_t sum_Gx = 0, sum_Gy = 0, sum_Gz = 0;
 
 	data_h = __MPU6050_Read_Reg(MPU6050_ACCEL_XOUT_H);
 	data_l = __MPU6050_Read_Reg(MPU6050_ACCEL_XOUT_L);
@@ -69,11 +68,11 @@ void MPU6050_GetData(infor* temp)
 	
 	data_h = __MPU6050_Read_Reg(MPU6050_GYRO_XOUT_H);
 	data_l = __MPU6050_Read_Reg(MPU6050_GYRO_XOUT_L);
-	(*temp).Gyro_X = ((data_h << 8) | data_l) + 45;		//抵消零飘
+	(*temp).Gyro_X = ((data_h << 8) | data_l) + 44;		//抵消零飘
 	
 	data_h = __MPU6050_Read_Reg(MPU6050_GYRO_YOUT_H);
 	data_l = __MPU6050_Read_Reg(MPU6050_GYRO_YOUT_L);
-	(*temp).Gyro_Y = ((data_h << 8) | data_l) + 15;		//抵消零飘
+	(*temp).Gyro_Y = ((data_h << 8) | data_l) - 2;		//抵消零飘
 	
 	data_h = __MPU6050_Read_Reg(MPU6050_GYRO_ZOUT_H);
 	data_l = __MPU6050_Read_Reg(MPU6050_GYRO_ZOUT_L);
@@ -103,7 +102,7 @@ void MPU6050_AttitudeEstimation_A(infor MPU6050)
 
 void MPU6050_AttitudeEstimation(infor MPU6050)
 {
-	static float pre_yaw = 0;
+	static float pre_yaw = 0, pre_pitch = 0, pre_roll = 0;
 	
 	pitch_g = pitch - 0.01 * ((float)MPU6050.Gyro_Y / 16.4);
 	roll_g = roll + 0.01 * ((float)MPU6050.Gyro_X / 16.4);
@@ -112,18 +111,30 @@ void MPU6050_AttitudeEstimation(infor MPU6050)
 	pitch_a = atan2((float)MPU6050.Acc_X, (float)MPU6050.Acc_Z) / Pi * 180.0;
 	roll_a = atan2((float)MPU6050.Acc_Y, (float)MPU6050.Acc_Z) / Pi * 180.0;
 	
-	pitch = 0.95238 * pitch_g + 0.04762 * pitch_a;
-	roll = 0.95238 * roll_g + 0.04762 * roll_a;
+	pitch_temp = 0.92238 * pitch_g + 0.07762 * pitch_a;
+	roll_temp = 0.92238 * roll_g + 0.07762 * roll_a;
 	
-	float deta = fabs(yaw_g - pre_yaw);
+	float deta_y = fabs(yaw_g - pre_yaw);
+	float data_p = fabs(pitch_temp - pre_pitch);
+	float data_r = fabs(roll_temp - pre_roll);
 
-	if (deta > 0.1) {
+	if (deta_y > 0.1) {
 		yaw = yaw_g;		
 	} else {
 		yaw = pre_yaw;
 	}
-	pre_yaw = yaw;
-    printf("%f, %f, %f\r\n", -pitch, roll, yaw);
+	// if (data_p > 0.05) {
+	 	pitch = pitch_temp;
+	// } else {
+	// 	pitch = pre_pitch;
+	// }
+	// if (data_r > 0.05) {
+	 	roll = roll_temp;
+	// } else {
+	// 	roll = pre_roll;
+	// }
+	pre_yaw = yaw, pre_pitch = pitch, pre_roll = roll;
+    //printf("%f, %f, %f\r\n", -pitch, roll, yaw);
 }
 
 //0.95238, 0.04762

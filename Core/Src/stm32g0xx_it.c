@@ -297,6 +297,11 @@ void USART1_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+void Balance_Fix(void)
+{
+
+}
+
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
     if (huart == &VOFA_UART) {
@@ -314,7 +319,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     current_time++;
     //Debug_Command(command);				//需要串口调试时解除注释
     if (cnt >= 10) {                //10ms进行一次姿态解算
-    MPU6050_AttitudeEstimation(MPU6050);
+      MPU6050_AttitudeEstimation(MPU6050);
       if (PID_Start) {
         PID_Control();
       }
@@ -326,6 +331,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
       Delay_ms(700);
       Emergy_Flag = false;
       Bind_Flag = false;
+    }
+    if (cnt1 >= 100) {
+
+      cnt1 = 0;
     }
   }
 }

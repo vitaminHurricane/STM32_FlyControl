@@ -278,16 +278,16 @@ void H24_Command(void)
             target_yaw -= zan;
             zan = temp[2] / 4096.0 * 20;
             //target_pitch = 1.5 + zan;
-            if (zan > 5) {
+            if (zan > 7) {
                 target_pitch = balance_P + 3;
-            } else if (zan < -5) {
+            } else if (zan < -7) {
                 target_pitch = balance_P - 3;
             }
             zan = temp[3] / 4096.0 * 20;
             //target_roll = -5 - zan;
-            if (zan > 5) {
+            if (zan > 7) {
                 target_roll = balance_R - 3;
-            } else if (zan < -5) {
+            } else if (zan < -7) {
                 target_roll = balance_R + 3;
             }
             //printf("%d, %f, %f, %f\r\n", throttle, target_pitch, target_roll, target_yaw);

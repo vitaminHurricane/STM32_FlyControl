@@ -6,22 +6,22 @@
 #include <stdio.h>
 #include <math.h>
 
-//float P_p = 4.62, I_p = 0.0357, D_p = 54.28;
-//float P_r = 4.83, I_r = 0.0376, D_r = 56.42;
-//float P_y = 5.3, I_y = 0, D_y = 10;
+//float P_p = 4.82, I_p = 0.05/*0.0457*/, D_p = 51;
+//float P_r = 5.93, I_r = 0.08/*0.0476*/, D_r = 47;
+//float P_y = 5, I_y = 0, D_y = 0;
 
-// float P_p = 6.62, I_p = 0.1/*0.0457*/, D_p = 58.28;
-// float P_r = 6.83, I_r = 0.1/*0.0476*/, D_r = 60.42;
-// float P_y = 5.3, I_y = 0, D_y = 10;
+// float P_p = 4.72, I_p = 0.088/*0.0457*/, D_p = 38;
+// float P_r = 5.43, I_r = 0.099/*0.0476*/, D_r = 40;
+// float P_y = 7, I_y = 0, D_y = 0;
 
-float P_p = 6.62, I_p = 0.4/*0.0457*/, D_p = 48.28;
-float P_r = 6.83, I_r = 0.2/*0.0476*/, D_r = 50.42;
-float P_y = 9.3, I_y = 0, D_y = 10;
+float P_p = 5.02, I_p = 0.09/*0.0457*/, D_p = 38;
+float P_r = 5.43, I_r = 0.135/*0.0476*/, D_r = 40;
+float P_y = 5, I_y = 0, D_y = 0;
 
 float target_pitch, target_roll, target_yaw;
 float current_pitch, current_roll, current_yaw;
 
-float balance_P = 0, balance_R = -3, balance_Y = 0;
+float balance_P = 1.8, balance_R = -2.9, balance_Y = 0;
 
 static float err_pre_p = 0, err_now_p = 0, err_int_p = 0;
 static float err_pre_r = 0, err_now_r = 0, err_int_r = 0;
@@ -65,12 +65,13 @@ float PID_Pitch(void)
     current_pitch = pitch;
     err_pre_p = err_now_p;
     err_now_p = target_pitch - current_pitch;
-    if (fabs(err_now_p) > 5) {
+    if (fabs(err_now_p) > 1) {
         err_int_p += err_now_p;
     } 
-    __PID_LimitErrorInt(&err_int_p);
+    float temp = err_int_p * I_p;
+    __PID_LimitErrorInt(&temp);
 
-    float result = -P_p * err_now_p - I_p * err_int_p - D_p * (err_now_p - err_pre_p);
+    float result = -P_p * err_now_p - temp - D_p * (err_now_p - err_pre_p);
     __PID_LimitResult(&result);
     return result;
 }
@@ -80,12 +81,13 @@ float PID_Roll(void)
     current_roll = roll;
     err_pre_r = err_now_r;
     err_now_r = target_roll - current_roll;
-    if (fabs(err_now_r) > 5) {          //当误差大于两度时开启积分修正
+    if (fabs(err_now_r) > 1) {          //当误差大于两度时开启积分修正
         err_int_r += err_now_r;
     } 
-    __PID_LimitErrorInt(&err_int_r);
+    float temp = err_int_r * I_r;
+    __PID_LimitErrorInt(&temp);
 
-    float result = P_r * err_now_r + I_r * err_int_r + D_r * (err_now_r - err_pre_r);
+    float result = P_r * err_now_r + temp + D_r * (err_now_r - err_pre_r);
     __PID_LimitResult(&result);
     return result;
 }
@@ -127,6 +129,10 @@ void PID_DataUpdate(float p, float r, float y)             //PID姿态更新
     PID_SetPitch(p);
     PID_SetRoll(r);
     PID_SetYaw(y);
+
+    err_int_p = err_int_r = err_int_y = 0;
+    err_pre_p = err_pre_r = err_pre_y = 0;
+    err_now_p = err_now_r = err_now_y = 0;
     //printf("%.2f, %.2f, %.2f\r\n", target_pitch, target_roll, target_yaw);
 }
 

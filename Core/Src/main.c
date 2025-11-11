@@ -140,18 +140,18 @@ int main(void)
       H24_Command();					//收到数据包则执行相应指令
     }
              //不断获取当前时间ms
-    // if ((fabs(pitch) >= 30 || fabs(roll) >= 30)) {
-    //   Emergy_Flag = true;		//飞行时的姿态保护，防止倾角过大导致飞机失控
-    // } 
+    if ((fabs(pitch) >= 30 || fabs(roll) >= 30)) {
+      Emergy_Flag = true;		//飞行时的姿态保护，防止倾角过大导致飞机失控
+    } 
 
     if (!PID_Start) {       //当没有PID修正时，将平衡点设置回悬浮状态
       PID_DataUpdate(balance_P, balance_R, yaw);
     }
-    // if (Bind_Flag == true) {    //当对码成功后，检查当前时间与上次接收到数据的时间差，通过时间差判断是否丢控
-    //   if (fabs(current_time - get_time) >= 700) {
-    //     Emergy_Flag = true;
-    //   }
-    // }
+    if (Bind_Flag == true) {    //当对码成功后，检查当前时间与上次接收到数据的时间差，通过时间差判断是否丢控
+      if (fabs(current_time - get_time) >= 700) {
+        Emergy_Flag = true;
+      }
+    }
   }
   /* USER CODE END 3 */
 }
