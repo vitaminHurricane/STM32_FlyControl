@@ -348,7 +348,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     }
     if (cnt1 >= 100 && throttle >= 150) {
       if (PID_Start) {
-        Balance_Fix();
+        //Balance_Fix();
       }
       cnt1 = 0;
     }

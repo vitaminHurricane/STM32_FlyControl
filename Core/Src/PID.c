@@ -16,12 +16,12 @@
 
 float P_p = 4.92, I_p = 0.09/*0.0457*/, D_p = 58;
 float P_r = 5.43, I_r = 0.135/*0.0476*/, D_r = 60;
-float P_y = 7.3, I_y = 0, D_y = 40;
+float P_y = 7.3, I_y = 0.1, D_y = 40;
 
 float target_pitch, target_roll, target_yaw;
 float current_pitch, current_roll, current_yaw;
 
-float balance_P = 1.9, balance_R = -2.2, balance_Y = 0;
+float balance_P = 1.6, balance_R = -2.2, balance_Y = 0;
 
 static float err_pre_p = 0, err_now_p = 0, err_int_p = 0;
 static float err_pre_r = 0, err_now_r = 0, err_int_r = 0;
@@ -117,7 +117,7 @@ void PID_Control(void)
 	
     fixed_1 = throttle + fix_p + fix_r + fix_y;
     fixed_4 = throttle + fix_p - fix_r - fix_y + 80;
-    fixed_2 = throttle - fix_p - fix_r + fix_y + 80;
+    fixed_2 = throttle - fix_p - fix_r + fix_y + 90;
     fixed_3 = throttle - fix_p + fix_r - fix_y;
 	//printf("%f\r\n", fixed_1);
 	
