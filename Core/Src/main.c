@@ -146,9 +146,10 @@ int main(void)
 
     if (!PID_Start) {       //当没有PID修正时，将平衡点设置回悬浮状态
       PID_DataUpdate(balance_P, balance_R, yaw);
+      PID_DataClear();
     }
     if (Bind_Flag == true) {    //当对码成功后，检查当前时间与上次接收到数据的时间差，通过时间差判断是否丢控
-      if (fabs(current_time - get_time) >= 700) {
+      if (fabs(current_time - get_time) >= 1000) {
         Emergy_Flag = true;
       }
     }

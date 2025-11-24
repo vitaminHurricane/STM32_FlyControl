@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "Motor.h"
 #include "H24.h"
 #include "H24_Command.h"
@@ -297,9 +298,22 @@ void USART1_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+
 void Balance_Fix(void)
 {
-
+  if (pitch > balance_P + 0.5 && target_pitch >= balance_P - 0.03) {
+    target_pitch -= 0.0005;
+  } else if (pitch < balance_P - 0.5 && target_pitch <= balance_P + 0.03) {
+    target_pitch += 0.0005;
+  }
+  if (roll > balance_R + 0.5 && target_roll >= balance_R - 0.03) {
+    target_roll -= 0.0005;
+  } else if (roll < balance_R - 0.5 && target_roll <= balance_R + 0.03) {
+    target_roll += 0.0005;
+  }
+  if (fabs(yaw - target_yaw) >= 40) {
+    target_yaw = yaw;
+  }
 }
 
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
@@ -332,8 +346,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
       Emergy_Flag = false;
       Bind_Flag = false;
     }
-    if (cnt1 >= 100) {
-
+    if (cnt1 >= 100 && throttle >= 150) {
+      if (PID_Start) {
+        Balance_Fix();
+      }
       cnt1 = 0;
     }
   }

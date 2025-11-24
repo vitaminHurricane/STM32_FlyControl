@@ -134,9 +134,11 @@ void MPU6050_AttitudeEstimation(infor MPU6050)
 	// 	roll = pre_roll;
 	// }
 	pre_yaw = yaw, pre_pitch = pitch, pre_roll = roll;
-    //printf("%f, %f, %f\r\n", -pitch, roll, yaw);
+    //printf("%f, %f, %f\r\n", pitch, roll, yaw);
 }
 
 //0.95238, 0.04762
 //0.90909, 0.09091
+
+//0.92238, 0.07762
 

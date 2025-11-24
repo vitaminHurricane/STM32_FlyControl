@@ -5,6 +5,7 @@
 #include "H24_Command.h"
 #include "Motor.h"
 #include "PID.h"
+#include "MPU6050.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -274,8 +275,10 @@ void H24_Command(void)
             } else {
                 throttle = 0;
             }
-            zan = temp[1] / 4096.0 * 2;
-            target_yaw -= zan;
+            zan = temp[1] / 4096.0 * 20;
+            if (fabs(zan) > 7) {
+                target_yaw -= zan;
+            }
             zan = temp[2] / 4096.0 * 20;
             //target_pitch = 1.5 + zan;
             if (zan > 7) {
@@ -294,6 +297,9 @@ void H24_Command(void)
             if (throttle >= 50) {
                 if (!PID_Start) {
                     PID_Start = true;
+                }
+                if (throttle >= 800) {
+                    throttle = 800;
                 }
             } else {
                 throttle = 0;
