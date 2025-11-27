@@ -1,8 +1,8 @@
 #ifndef __PID_H
 #define __PID_H
 
-#define INT_MAX         50
-#define FIX_MAX         200
+#define INT_MAX         100
+#define FIX_MAX         300
 
 extern float target_roll, target_pitch, target_yaw;
 extern float balance_P, balance_R, balance_Y;

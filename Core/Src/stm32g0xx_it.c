@@ -301,14 +301,14 @@ void USART1_IRQHandler(void)
 
 void Balance_Fix(void)
 {
-  if (pitch > balance_P + 0.5 && target_pitch >= balance_P - 0.03) {
+  if (pitch > balance_P + 1 && target_pitch >= balance_P - 0.03) {
     target_pitch -= 0.0005;
-  } else if (pitch < balance_P - 0.5 && target_pitch <= balance_P + 0.03) {
+  } else if (pitch < balance_P - 1 && target_pitch <= balance_P + 0.03) {
     target_pitch += 0.0005;
   }
-  if (roll > balance_R + 0.5 && target_roll >= balance_R - 0.03) {
+  if (roll > balance_R + 1 && target_roll >= balance_R - 0.03) {
     target_roll -= 0.0005;
-  } else if (roll < balance_R - 0.5 && target_roll <= balance_R + 0.03) {
+  } else if (roll < balance_R - 1 && target_roll <= balance_R + 0.03) {
     target_roll += 0.0005;
   }
   if (fabs(yaw - target_yaw) >= 40) {
@@ -342,13 +342,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     if (Emergy_Flag) {
       RX_Buf[0] = Motor_All_OFF;
       H24_Command();
-      Delay_ms(700);
+      Delay_ms(400);
       Emergy_Flag = false;
       Bind_Flag = false;
     }
     if (cnt1 >= 100 && throttle >= 150) {
       if (PID_Start) {
-        //Balance_Fix();
+        Balance_Fix();
       }
       cnt1 = 0;
     }

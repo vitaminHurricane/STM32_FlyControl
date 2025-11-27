@@ -7,6 +7,8 @@
 #include "tim.h"
 #include "Debug.h"
 #include "usart.h"
+#include "MPU6050.h"
+#include "PID.h"
 
 char R_buffer[MAX] = "\0";
 char command[MAX] = "\0";
@@ -104,5 +106,35 @@ void Debug_Devide(uint8_t *array, float p, float r, float y)
     array[4] = r_1, array[5] = r_2;
     array[7] = y_1, array[8] = y_2;
     array[0] = state1, array[3] = state2, array[6] = state3;
+}
+
+void Debug_P(void)
+{
+    if (balance_P - pitch > 0.5) {
+        Motor_SetLED(Channel_1, GPIO_PIN_SET);
+        Motor_SetLED(Channel_4, GPIO_PIN_SET);
+        Motor_SetLED(Channel_2, GPIO_PIN_RESET);
+        Motor_SetLED(Channel_3, GPIO_PIN_RESET);
+    } else if (pitch - balance_P > 0.5) {
+        Motor_SetLED(Channel_1, GPIO_PIN_RESET);
+        Motor_SetLED(Channel_4, GPIO_PIN_RESET);
+        Motor_SetLED(Channel_2, GPIO_PIN_SET);
+        Motor_SetLED(Channel_3, GPIO_PIN_SET);
+    }
+}
+
+void Debug_R(void)
+{
+    if (roll - balance_R > 0.5) {
+        Motor_SetLED(Channel_2, GPIO_PIN_RESET);
+        Motor_SetLED(Channel_4, GPIO_PIN_RESET);
+        Motor_SetLED(Channel_1, GPIO_PIN_SET);
+        Motor_SetLED(Channel_3, GPIO_PIN_SET);
+    } else if (balance_R - roll> 0.5) {
+        Motor_SetLED(Channel_2, GPIO_PIN_SET);
+        Motor_SetLED(Channel_4, GPIO_PIN_SET);
+        Motor_SetLED(Channel_1, GPIO_PIN_RESET);
+        Motor_SetLED(Channel_3, GPIO_PIN_RESET);
+    }
 }
 

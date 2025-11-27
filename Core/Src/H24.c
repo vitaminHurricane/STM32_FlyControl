@@ -260,6 +260,7 @@ void H24_Command(void)
                 Motor_SetAllLED(GPIO_PIN_RESET);
                 Delay_ms(50);
             }
+            Motor_SetAllLED(GPIO_PIN_RESET);
             Bind_Flag = true;
             get_time = current_time;
             Motor_SetAllLED(GPIO_PIN_SET);
@@ -271,7 +272,7 @@ void H24_Command(void)
             temp[3] = (RX_Buf[8] << 8) | RX_Buf[7]; //Roll
             zan = temp[0] / 4096.0 * 1000;
             if (zan > 530) {
-                throttle = (zan - 520) * 2;
+                throttle = (zan - 500) * 2;
             } else {
                 throttle = 0;
             }
@@ -281,25 +282,25 @@ void H24_Command(void)
             }
             zan = temp[2] / 4096.0 * 20;
             //target_pitch = 1.5 + zan;
-            if (zan > 7) {
+            if (zan > 10) {
                 target_pitch = balance_P + 3;
-            } else if (zan < -7) {
+            } else if (zan < -10) {
                 target_pitch = balance_P - 3;
             }
             zan = temp[3] / 4096.0 * 20;
             //target_roll = -5 - zan;
-            if (zan > 7) {
+            if (zan > 10) {
                 target_roll = balance_R - 3;
-            } else if (zan < -7) {
+            } else if (zan < -10) {
                 target_roll = balance_R + 3;
             }
             //printf("%d, %f, %f, %f\r\n", throttle, target_pitch, target_roll, target_yaw);
             if (throttle >= 50) {
-                if (!PID_Start) {
+                if (PID_Start == false) {
                     PID_Start = true;
                 }
-                if (throttle >= 800) {
-                    throttle = 800;
+                if (throttle >= 900) {
+                    throttle = 900;
                 }
             } else {
                 throttle = 0;

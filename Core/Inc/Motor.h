@@ -2,7 +2,7 @@
 #define __MOTRO_H
 #include "main.h"
 
-#define MAX_SPEED           900
+#define MAX_SPEED           1000
 
 #define LED_PORT1           GPIOA
 #define LED_PORT2           GPIOD

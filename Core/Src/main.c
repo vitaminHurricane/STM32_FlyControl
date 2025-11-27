@@ -153,7 +153,10 @@ int main(void)
         Emergy_Flag = true;
       }
     }
+    Debug_R(); 
   }
+
+
   /* USER CODE END 3 */
 }
 

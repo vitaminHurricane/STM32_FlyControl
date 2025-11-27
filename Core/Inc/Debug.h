@@ -20,7 +20,9 @@ void __Debug_ClearBuffer(uint8_t size);
 /*******************************public*************************************/
 void Debug_DataRecieve(void);   
 void Debug_Command(char *command);    
-void Debug_Devide(uint8_t *array, float p, float r, float y);        
+void Debug_Devide(uint8_t *array, float p, float r, float y);   
+void Debug_R(void);
+void Debug_P(void);    
 /**************************************************************************/
 
 #endif
